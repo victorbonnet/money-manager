@@ -2,8 +2,9 @@
 
 import datetime
 import time
-import signal
+from time import strptime
 import sys
+import calendar
 import sqlite3
 
 conn = sqlite3.connect('money_manager.db')
@@ -24,15 +25,25 @@ def addTransaction(date, total, currency, info):
 
 def display():
     cur = conn.cursor()
-    list = []
     total = 0
+    totalPerMonth = 0
+    month = ""
+    print "\n"
     for row in cur.execute('SELECT value, currency, date, info FROM Transact ORDER BY date'):
-        list.append(row[2])
         total += row[0];
-        print datetime.datetime.fromtimestamp(int(row[2])).strftime('%d/%m/%Y'), ", value: ", str(
-            row[0])
+        if (month == datetime.datetime.fromtimestamp(int(row[2])).strftime('%m')):
+            totalPerMonth += row[0];
+        else :
+            if (month != "") :
+                print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth
+            month = datetime.datetime.fromtimestamp(int(row[2])).strftime('%m')
+            totalPerMonth = row[0];
+
+#        print datetime.datetime.fromtimestamp(int(row[2])).strftime('%d/%m/%Y'), ", value: ", str(row[0])
+    print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth
+
     cur.close()
-    print "total: ", total
+    print "\nTotal: \t\t\t\t", total, "\n\n"
 
 
 if __name__ == "__main__":
