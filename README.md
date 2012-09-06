@@ -1,4 +1,4 @@
 money-manager
 =============
 
-MoneyManager
+Simple program to manage income and spending
