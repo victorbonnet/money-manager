@@ -26,24 +26,42 @@ def addTransaction(date, total, currency, info):
 def display():
     cur = conn.cursor()
     total = 0
+    positive = 0
+    negative = 0
     totalPerMonth = 0
+    positivePerMonth = 0
+    negativePerMonth = 0
     month = ""
-    print "\n"
+    print "\n\n\n\n\n\t\t\t\t\t\t\tIncome\t\tSpending\n"
     for row in cur.execute('SELECT value, currency, date, info FROM Transact ORDER BY date'):
         total += row[0];
+        if (row[0] > 0):
+            positive += row[0]
+        else:
+            negative += row[0]
         if (month == datetime.datetime.fromtimestamp(int(row[2])).strftime('%m')):
             totalPerMonth += row[0];
-        else :
-            if (month != "") :
-                print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth
+            if (row[0] > 0):
+                positivePerMonth += row[0]
+            else:
+                negativePerMonth += row[0]
+        else:
+            if (month != ""):
+                print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth, "  \t\t", positivePerMonth, "   \t", negativePerMonth
             month = datetime.datetime.fromtimestamp(int(row[2])).strftime('%m')
             totalPerMonth = row[0];
+            if (row[0] > 0):
+                positivePerMonth = row[0]
+                negativePerMonth = 0
+            else:
+                positivePerMonth = 0
+                negativePerMonth = row[0]
 
-#        print datetime.datetime.fromtimestamp(int(row[2])).strftime('%d/%m/%Y'), ", value: ", str(row[0])
-    print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth
+            #        print datetime.datetime.fromtimestamp(int(row[2])).strftime('%d/%m/%Y'), ", value: ", str(row[0])
+    print "Total for ", calendar.month_name[int(month)], ": \t\t", totalPerMonth, "  \t\t", positivePerMonth, "   \t", negativePerMonth
 
     cur.close()
-    print "\nTotal: \t\t\t\t", total, "\n\n"
+    print "\nTotal: \t\t\t\t", total, "  \t\t", positive, "   \t", negative, "\n\n\n\n"
 
 
 if __name__ == "__main__":
