@@ -6,6 +6,7 @@ from time import strptime
 import sys
 import calendar
 import sqlite3
+import string
 
 conn = sqlite3.connect('money_manager.db')
 
@@ -85,6 +86,16 @@ if __name__ == "__main__":
         total = total.rstrip('\n')
         currency = currency.rstrip('\n')
         info = info.rstrip('\n')
+
+        addTransaction(date, total, currency, info);
+    elif (sys.argv[1] == "addLine"):
+        list = sys.argv[2].split('?')
+
+
+        date = datetime.datetime.strptime(list[0].rstrip('\n'), '%d/%m/%Y')
+        total = list[2].rstrip('\n')
+        currency = "euro"
+        info = list[1].rstrip('\n')
 
         addTransaction(date, total, currency, info);
     elif (sys.argv[1] == "display"):
